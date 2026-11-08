@@ -1,754 +1,1000 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-900">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSIS 2nd Semester Schedule | City College of Calapan</title>
-
-    <!-- Meta Tags for Professional Web Display -->
-    <meta name="description" content="Official 2nd Semester Student Class Schedule & Fee Assessment Dashboard">
-    <meta property="og:title" content="Student Class Schedule - Second Semester">
-    <meta property="og:description" content="Interactive Class Schedule with Live Day Tracking & Assessment Overview">
-    <meta property="og:type" content="website">
-
-    <!-- Tailwind CSS CDN -->
+    <title>Class Schedule - Student Portal</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
                         brand: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            900: '#064e3b',
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        /* Smooth Entrance Animations */
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: scale(0.98); }
-            50% { opacity: 0.8; transform: scale(1.02); }
-        }
-        .animate-glow { animation: pulseGlow 3s infinite ease-in-out; }
-        
         /* Custom scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-        ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.8); }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.03);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* 100% full-screen timetable grid for all devices */
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: 42px repeat(5, minmax(0, 1fr));
+            width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .timetable-grid {
+                grid-template-columns: 60px repeat(5, minmax(0, 1fr));
+            }
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Entrance Animation Overlay */
+        #splash-screen {
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .splash-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.4)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(34, 197, 94, 0.7)); }
+        }
+        .logo-pulse {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
 
         @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; }
-            .print-card { border: 1px solid #ccc !important; box-shadow: none !important; background: white !important; color: black !important; }
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .print-full-width {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
         }
     </style>
 </head>
-<body class="h-full text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white bg-slate-900">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-screen pb-12 transition-colors duration-200">
 
-    <!-- 1. ENTRANCE SPLASH SCREEN ANIMATION -->
-    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700">
-        <div class="relative flex flex-col items-center p-6 text-center">
-            <div class="w-24 h-24 mb-6 rounded-full bg-brand-500/10 border-2 border-brand-500 flex items-center justify-center animate-glow shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                <i class="fa-solid fa-graduation-cap text-4xl text-brand-500"></i>
+    <!-- Professional Splash Loading Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="flex flex-col items-center text-center max-w-sm">
+            <!-- Animated Shield Logo -->
+            <div class="logo-pulse w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-brand-700 via-emerald-500 to-teal-400 p-0.5 shadow-2xl flex items-center justify-center mb-6">
+                <div class="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap text-3xl sm:text-4xl text-emerald-400"></i>
+                </div>
             </div>
-            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide mb-2">CITY COLLEGE OF CALAPAN</h1>
-            <p class="text-xs md:text-sm text-brand-500 font-semibold uppercase tracking-widest mb-6">Student Portal Schedule System</p>
-            
-            <!-- Progress Bar -->
-            <div class="w-48 md:w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden mb-3">
-                <div id="splash-progress" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-0 transition-all duration-1000 ease-out"></div>
+
+            <h1 class="text-xl sm:text-2xl font-black tracking-wide text-white uppercase mb-1">
+                City College of Calapan
+            </h1>
+            <p class="text-xs sm:text-sm font-medium text-emerald-400 tracking-wider uppercase mb-8">
+                Academic Student Portal
+            </p>
+
+            <!-- Loading Spinner & Bar -->
+            <div class="w-48 bg-slate-800/80 rounded-full h-1.5 overflow-hidden p-0.5 border border-slate-700 mb-3">
+                <div id="splash-progress" class="bg-gradient-to-r from-emerald-500 to-brand-400 h-full rounded-full w-0 transition-all duration-300 ease-out"></div>
             </div>
-            <p class="text-xs text-slate-400 font-mono">Loading schedule data...</p>
+            <span class="text-[11px] font-mono text-slate-400 animate-pulse">Initializing Schedule Dashboard...</span>
         </div>
     </div>
 
-    <!-- 2. STUDENT PROFILE INPUT / SETUP MODAL -->
-    <div id="profile-modal" class="fixed inset-0 z-40 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl relative">
-            <div class="text-center mb-6">
-                <div id="modal-photo-container" class="relative w-24 h-24 mx-auto mb-3">
-                    <img id="modal-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-2 border-brand-500 shadow-lg hidden" alt="Profile Preview">
-                    <div id="modal-avatar-placeholder" class="w-24 h-24 rounded-full bg-slate-700 border-2 border-dashed border-slate-500 flex items-center justify-center text-slate-400">
-                        <i class="fa-solid fa-user-gear text-3xl"></i>
+    <!-- Top Navigation Header -->
+    <header class="bg-brand-800 dark:bg-slate-950 text-white shadow-md sticky top-0 z-40 border-b border-brand-700 dark:border-slate-800 no-print">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center font-extrabold text-base border border-white/20 shrink-0">
+                    CCC
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-base leading-tight">CITY COLLEGE OF CALAPAN</h1>
+                    <p class="text-[10px] sm:text-xs text-brand-100 dark:text-slate-400">Student Portal & Official Class Schedule</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <!-- Dark Mode Toggle Button -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs transition" title="Toggle Theme">
+                    <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <!-- Print / PDF Button -->
+                <button onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Print / PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-3 sm:pt-5 print-full-width">
+
+        <!-- Dynamic Student Information Banner -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-700/80 p-3.5 sm:p-5 mb-4 sm:mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700/60 pb-4">
+                <div class="flex items-start space-x-3">
+                    <div id="student-avatar" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-brand-700 to-emerald-500 text-white flex items-center justify-center text-lg sm:text-xl font-bold shadow-xs shrink-0">
+                        --
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 id="student-name-display" class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">Student Name</h2>
+                            <button onclick="openProfileModal()" class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold flex items-center gap-1 no-print">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                            </button>
+                            <span class="bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-700/50">
+                                Irregular (26 unit(s) allowed)
+                            </span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                            <i class="fa-solid fa-id-card mr-1 text-slate-400"></i> Student No: <span id="student-id-display" class="font-semibold text-slate-700 dark:text-slate-200">--</span>
+                        </p>
                     </div>
                 </div>
-                <h3 class="text-xl font-bold text-white">Student Setup Profile</h3>
-                <p class="text-xs text-slate-400 mt-1">Setup your name, ID, and optional profile photo once.</p>
+
+                <!-- Academic Metrics Highlights -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700/50 text-center">
+                        <span class="text-[9px] sm:text-xs text-slate-400 uppercase font-semibold">Program</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 block truncate" title="BSIS 24 - Section A">BSIS 24 (Sec A)</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700/50 text-center">
+                        <span class="text-[9px] sm:text-xs text-slate-400 uppercase font-semibold">Credited Units</span>
+                        <span class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 block">26 Units</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700/50 text-center">
+                        <span class="text-[9px] sm:text-xs text-slate-400 uppercase font-semibold">Tuition Hours</span>
+                        <span class="text-xs sm:text-sm font-bold text-brand-700 dark:text-brand-400 block">26 Hours</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-100 dark:border-slate-700/50 text-center">
+                        <span class="text-[9px] sm:text-xs text-slate-400 uppercase font-semibold">Total Assessed</span>
+                        <span class="text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400 block">₱5,740.00</span>
+                    </div>
+                </div>
             </div>
 
-            <form id="profile-form" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Student Full Name</label>
-                    <input type="text" id="input-student-name" required placeholder="e.g. LUZON, JARED C." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Student ID Number</label>
-                    <input type="text" id="input-student-id" required placeholder="e.g. 25-07017" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Upload Profile Photo (Optional)</label>
-                    <input type="file" id="input-student-photo" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-brand-500 hover:file:bg-slate-600">
-                    <button type="button" id="btn-remove-photo" class="text-[11px] text-red-400 hover:underline mt-1 hidden"><i class="fa-solid fa-trash mr-1"></i>Remove Photo</button>
+            <!-- Detailed Academic Information Pills -->
+            <div class="pt-3 flex flex-wrap gap-y-1.5 gap-x-5 text-xs text-slate-600 dark:text-slate-400">
+                <div><span class="text-slate-400">Year Level:</span> <strong class="text-slate-700 dark:text-slate-200">Second Year</strong></div>
+                <div><span class="text-slate-400">Term:</span> <strong class="text-slate-700 dark:text-slate-200">Second Semester</strong></div>
+                <div><span class="text-slate-400">Academic Year:</span> <strong class="text-slate-700 dark:text-slate-200">AY 2026-2027</strong></div>
+                <div><span class="text-slate-400">Program:</span> <strong class="text-slate-700 dark:text-slate-200">BSIS 24 - Bachelor of Science in Information System 2024</strong></div>
+            </div>
+        </div>
+
+        <!-- Android & Mobile Day Filter Buttons -->
+        <div class="block lg:hidden no-print mb-3">
+            <div class="flex items-center justify-between mb-1.5">
+                <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Day Selection</div>
+                <span id="today-mobile-indicator" class="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="mobile-indicator-text">Today</span>
+                </span>
+            </div>
+            <div class="flex overflow-x-auto space-x-1.5 pb-1 no-scrollbar" id="mobile-day-tabs">
+                <button onclick="setDayFilter('TODAY')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition bg-brand-700 text-white shadow-xs" data-day="TODAY">Today Only</button>
+                <button onclick="setDayFilter('ALL')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="ALL">All Days</button>
+                <button onclick="setDayFilter('M')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="M">Mon</button>
+                <button onclick="setDayFilter('T')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="T">Tue</button>
+                <button onclick="setDayFilter('W')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="W">Wed</button>
+                <button onclick="setDayFilter('TH')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="TH">Thu</button>
+                <button onclick="setDayFilter('F')" class="day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" data-day="F">Fri</button>
+            </div>
+        </div>
+
+        <!-- Toolbar & View Mode Switcher -->
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 mb-4 no-print">
+            
+            <!-- View Buttons -->
+            <div class="bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl flex items-center self-start sm:self-auto border border-slate-200 dark:border-slate-700">
+                <button id="view-timetable-btn" onclick="switchView('timetable')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs">
+                    <i class="fa-solid fa-calendar-week mr-1 text-brand-600 dark:text-brand-400"></i>Weekly Grid
+                </button>
+                <button id="view-list-btn" onclick="switchView('list')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-list-ul mr-1 text-brand-600 dark:text-brand-400"></i>Detailed List
+                </button>
+                <button id="view-assessment-btn" onclick="switchView('assessment')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-file-invoice-dollar mr-1 text-brand-600 dark:text-brand-400"></i>Assessment Fees
+                </button>
+            </div>
+
+            <!-- Search & Desktop Day Filter Dropdown -->
+            <div class="flex flex-col sm:flex-row gap-2.5">
+                <div class="relative min-w-[200px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="search-input" oninput="filterSubjects()" placeholder="Search code, title, room..." class="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 text-slate-800 dark:text-white transition">
                 </div>
 
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-lg shadow-brand-900/40 mt-4">
-                    Save Profile & Continue
-                </button>
+                <select id="day-filter" onchange="setDayFilter(this.value)" class="hidden lg:block px-3 py-1.5 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-600 text-slate-700 dark:text-slate-200 cursor-pointer font-medium">
+                    <option value="TODAY">Today Only</option>
+                    <option value="ALL">All Days</option>
+                    <option value="M">Monday</option>
+                    <option value="T">Tuesday</option>
+                    <option value="W">Wednesday</option>
+                    <option value="TH">Thursday</option>
+                    <option value="F">Friday</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- VIEW 1: Full-Screen Weekly Timetable Grid (No horizontal side scroll) -->
+        <div id="timetable-view" class="bg-white dark:bg-slate-800 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-700 overflow-hidden w-full">
+            <div class="w-full">
+                <!-- Day Headers Grid -->
+                <div id="timetable-header-grid" class="timetable-grid bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700 font-semibold text-[10px] sm:text-xs text-slate-600 dark:text-slate-300 uppercase tracking-wider text-center py-2">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Timetable Slot Grid -->
+                <div id="timetable-body" class="relative w-full">
+                    <!-- Dynamic subject cards placed via JavaScript -->
+                </div>
+            </div>
+            <div class="p-2.5 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-700 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 flex flex-wrap justify-between items-center gap-2 no-print">
+                <div class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brand-600"></i> Tap any subject block for details.</div>
+                <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Lab Included</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> Lecture Only</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: Detailed Subject Cards List -->
+        <div id="list-view" class="hidden space-y-3">
+            <div id="subject-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <!-- Subject Cards populated by JS -->
+            </div>
+            <div id="no-results-msg" class="hidden bg-white dark:bg-slate-800 p-8 text-center rounded-2xl border border-slate-200 dark:border-slate-700">
+                <i class="fa-solid fa-calendar-xmark text-3xl text-slate-300 dark:text-slate-600 mb-2"></i>
+                <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">No classes found for this filter</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Select "All Days" or clear your search query.</p>
+            </div>
+        </div>
+
+        <!-- VIEW 3: Assessment & Financial Fees Breakdown -->
+        <div id="assessment-view" class="hidden bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6 shadow-xs">
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center justify-between">
+                <span><i class="fa-solid fa-receipt text-brand-600 mr-2"></i>Assessment Fee Breakdown</span>
+                <span class="text-xs font-normal text-slate-400">AY 2026-2027 • Second Semester</span>
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Itemized Fee List -->
+                <div class="space-y-2.5">
+                    <div class="flex justify-between text-xs sm:text-sm py-1.5 border-b border-slate-100 dark:border-slate-700">
+                        <span class="text-slate-600 dark:text-slate-300 font-medium">Tuition Fee (26 Tuition Hours)</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-200">Php 2,860.00</span>
+                    </div>
+
+                    <div class="pt-1 font-semibold text-[11px] text-slate-400 uppercase tracking-wider">Miscellaneous Fee (Php 2,000.00)</div>
+                    <div class="pl-2.5 space-y-1 text-xs text-slate-600 dark:text-slate-400 border-l-2 border-brand-500">
+                        <div class="flex justify-between py-0.5"><span>REGISTRATION FEE</span> <span class="font-semibold">Php 110.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>MEDICAL / DENTAL FEE</span> <span class="font-semibold">Php 165.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>ATHLETIC FEE</span> <span class="font-semibold">Php 110.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>GUIDANCE FEE</span> <span class="font-semibold">Php 340.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>CULTURAL FEE</span> <span class="font-semibold">Php 220.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>LIBRARY FEE</span> <span class="font-semibold">Php 165.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>COMPUTER FEE</span> <span class="font-semibold">Php 220.00</span></div>
+                        <div class="flex justify-between py-0.5"><span>DEVELOPMENT FEE</span> <span class="font-semibold">Php 670.00</span></div>
+                    </div>
+
+                    <div class="pt-1 font-semibold text-[11px] text-slate-400 uppercase tracking-wider">Other School Fees</div>
+                    <div class="pl-2.5 text-xs text-slate-600 dark:text-slate-400 border-l-2 border-brand-500">
+                        <div class="flex justify-between py-0.5"><span>LABORATORY FEE</span> <span class="font-semibold">Php 880.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Grand Total Box -->
+                <div class="bg-gradient-to-br from-slate-50 to-emerald-50/40 dark:from-slate-900/60 dark:to-slate-900/90 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Grand Assessment Total</span>
+                        <div class="text-3xl sm:text-4xl font-black text-rose-600 dark:text-rose-400">Php 5,740.00</div>
+                        <div class="mt-3 inline-flex items-center gap-1.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-700">
+                            <i class="fa-solid fa-circle-check"></i> Enrolled & Officially Validated
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">City College of Calapan</p>
+                        <p id="assessment-student-note" class="text-[11px] mt-0.5">Assessment registration verified for Student.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Student Profile Input / Setup Modal -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-6 relative">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-2xl bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Student Profile Setup</h3>
+                    <p class="text-xs text-slate-400">Enter your official details to personalize your portal.</p>
+                </div>
+            </div>
+
+            <form onsubmit="saveProfile(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Student Full Name</label>
+                    <input type="text" id="input-student-name" required placeholder="e.g. LUZON, JARED CONDRILLON" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">Student ID Number</label>
+                    <input type="text" id="input-student-id" required placeholder="e.g. 25-07017" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-white">
+                </div>
+
+                <div class="pt-2 flex justify-end space-x-2">
+                    <button type="button" id="close-profile-btn" onclick="closeProfileModal()" class="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hidden">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2 text-xs font-bold rounded-xl bg-brand-700 hover:bg-brand-600 text-white shadow-md transition">
+                        Save & Continue
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP WRAPPER -->
-    <div id="main-content" class="min-h-screen flex flex-col">
-
-        <!-- HEADER BANNER -->
-        <header class="bg-slate-950/80 backdrop-blur border-b border-slate-800 sticky top-0 z-30 no-print">
-            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-                <!-- College Title & Student Avatar -->
-                <div class="flex items-center space-x-3">
-                    <div class="relative group">
-                        <img id="header-user-avatar" src="" class="w-10 h-10 rounded-full object-cover border-2 border-brand-500 hidden" alt="User Avatar">
-                        <div id="header-user-initials" class="w-10 h-10 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm border-2 border-brand-400">
-                            --
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <h2 id="header-display-name" class="text-sm md:text-base font-bold text-white tracking-wide">--</h2>
-                            <span id="header-display-id" class="text-[11px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-mono">--</span>
-                        </div>
-                        <p class="text-xs text-slate-400">BSIS 24 (Year 2) • City College of Calapan</p>
-                    </div>
-                </div>
-
-                <!-- Action Toolbar -->
-                <div class="flex items-center space-x-2">
-                    <button id="btn-edit-profile" title="Edit Profile" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition border border-slate-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-user-pen"></i>
-                        <span class="hidden sm:inline">Profile</span>
-                    </button>
-                    <button id="btn-print" onclick="window.print()" title="Print Assessment" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition border border-slate-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-print"></i>
-                        <span class="hidden sm:inline">Print</span>
-                    </button>
-                </div>
+    <!-- Interactive Details Modal -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 hidden no-print">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-5 relative">
+            <button onclick="closeModal()" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Modal content inserted via JS -->
             </div>
-        </header>
-
-        <!-- SUB HEADER / TODAY SUMMARY -->
-        <section class="bg-slate-800/40 border-b border-slate-800 px-4 py-3 no-print">
-            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="flex items-center space-x-3 text-xs md:text-sm">
-                    <span id="live-today-badge" class="px-2.5 py-1 bg-brand-500/20 text-brand-500 border border-brand-500/30 rounded-full font-bold flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
-                        <span id="today-day-name">TODAY</span>
-                    </span>
-                    <span id="live-date-text" class="text-slate-300 font-medium">---</span>
-                </div>
-
-                <!-- View Switch Tabs -->
-                <div class="flex items-center bg-slate-900 p-1 rounded-lg border border-slate-700 text-xs">
-                    <button id="tab-grid" class="px-3 py-1.5 rounded-md font-semibold text-white bg-brand-600 shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-calendar-week"></i> Weekly Grid
-                    </button>
-                    <button id="tab-today" class="px-3 py-1.5 rounded-md font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-list-check"></i> Today's List
-                    </button>
-                    <button id="tab-assessment" class="px-3 py-1.5 rounded-md font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> Assessment
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- APP BODY CONTAINER -->
-        <main class="flex-1 max-w-7xl w-full mx-auto p-4 space-y-6">
-
-            <!-- VIEW 1: WEEKLY FULL-WIDTH BOARD (M-F Fits 100% on Mobile) -->
-            <div id="view-weekly-board" class="space-y-4">
-                
-                <!-- Legend & Search Bar -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 no-print">
-                    <div class="relative flex-1 max-w-xs">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                        <input type="text" id="search-input" placeholder="Search subject or room..." class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div class="flex items-center gap-2 text-[11px] text-slate-400">
-                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-900/60 border border-emerald-500"></span> Lab/Lec Assigned</span>
-                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-900/60 border border-amber-500"></span> TBA Room</span>
-                    </div>
-                </div>
-
-                <!-- 100% Width Weekly Table Layout -->
-                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
-                    <!-- Column Days Header (Time + M T W TH F) -->
-                    <div class="grid grid-cols-[45px_repeat(5,1fr)] bg-slate-900 border-b border-slate-700 text-center text-xs font-bold text-slate-300">
-                        <div class="py-2.5 border-r border-slate-800 text-[10px] text-slate-500">TIME</div>
-                        <div id="header-col-M" class="py-2.5 border-r border-slate-800 flex flex-col items-center justify-center">
-                            <span>MON</span>
-                        </div>
-                        <div id="header-col-T" class="py-2.5 border-r border-slate-800 flex flex-col items-center justify-center">
-                            <span>TUE</span>
-                        </div>
-                        <div id="header-col-W" class="py-2.5 border-r border-slate-800 flex flex-col items-center justify-center">
-                            <span>WED</span>
-                        </div>
-                        <div id="header-col-TH" class="py-2.5 border-r border-slate-800 flex flex-col items-center justify-center">
-                            <span>THU</span>
-                        </div>
-                        <div id="header-col-F" class="py-2.5 flex flex-col items-center justify-center">
-                            <span>FRI</span>
-                        </div>
-                    </div>
-
-                    <!-- Timetable Container -->
-                    <div id="grid-schedule-rows" class="divide-y divide-slate-800/60">
-                        <!-- Dynamic schedule content rendered by JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 2: TODAY'S DYNAMIC SUBJECT LIST VIEW -->
-            <div id="view-today-list" class="hidden space-y-4">
-                <div class="flex items-center justify-between bg-slate-800/60 p-4 rounded-xl border border-slate-700">
-                    <div>
-                        <h3 class="font-bold text-white text-base">Filtered Subject List</h3>
-                        <p class="text-xs text-slate-400">Shows current day schedule by default</p>
-                    </div>
-
-                    <!-- Filter Dropdown -->
-                    <select id="day-filter-select" class="bg-slate-900 border border-slate-700 text-xs text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <option value="TODAY">Today's Subjects Only</option>
-                        <option value="ALL">Show All Days (Mon-Fri)</option>
-                        <option value="M">Monday</option>
-                        <option value="T">Tuesday</option>
-                        <option value="W">Wednesday</option>
-                        <option value="TH">Thursday</option>
-                        <option value="F">Friday</option>
-                    </select>
-                </div>
-
-                <!-- Subject Cards Container -->
-                <div id="list-subjects-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- JS Injected Cards -->
-                </div>
-            </div>
-
-            <!-- VIEW 3: OFFICIAL ASSESSMENT & TUITION BREAKDOWN -->
-            <div id="view-assessment" class="hidden space-y-6">
-                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-xl print-card">
-                    <div class="border-b border-slate-700 pb-4 mb-4 flex justify-between items-start">
-                        <div>
-                            <h2 class="text-lg font-bold text-white uppercase tracking-wider">Assessment Summary</h2>
-                            <p class="text-xs text-slate-400">City College of Calapan • Second Semester 2026-2027</p>
-                        </div>
-                        <div class="text-right font-mono">
-                            <span class="text-xs text-slate-400 block">Grand Total Fee</span>
-                            <span class="text-2xl font-extrabold text-brand-500">₱ 5,740.00</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 block mb-1">Academic Tuition (26 Units)</span>
-                            <span class="text-lg font-bold text-white">₱ 2,860.00</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 block mb-1">Miscellaneous Fees</span>
-                            <span class="text-lg font-bold text-white">₱ 2,000.00</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 block mb-1">Other / Lab Fees</span>
-                            <span class="text-lg font-bold text-white">₱ 880.00</span>
-                        </div>
-                    </div>
-
-                    <!-- Detailed Fee Breakdown Table -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Itemized Breakdown</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr class="bg-slate-900/80 text-slate-400 border-b border-slate-700">
-                                    <th class="py-2 px-3">Item Description</th>
-                                    <th class="py-2 px-3 text-right">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-800 text-slate-300 font-mono">
-                                <tr><td class="py-2 px-3">REGISTRATION FEE</td><td class="py-2 px-3 text-right">Php 110.00</td></tr>
-                                <tr><td class="py-2 px-3">MEDICAL / DENTAL FEE</td><td class="py-2 px-3 text-right">Php 165.00</td></tr>
-                                <tr><td class="py-2 px-3">ATHLETIC FEE</td><td class="py-2 px-3 text-right">Php 110.00</td></tr>
-                                <tr><td class="py-2 px-3">GUIDANCE FEE</td><td class="py-2 px-3 text-right">Php 340.00</td></tr>
-                                <tr><td class="py-2 px-3">CULTURAL FEE</td><td class="py-2 px-3 text-right">Php 220.00</td></tr>
-                                <tr><td class="py-2 px-3">LIBRARY FEE</td><td class="py-2 px-3 text-right">Php 165.00</td></tr>
-                                <tr><td class="py-2 px-3">COMPUTER FEE</td><td class="py-2 px-3 text-right">Php 220.00</td></tr>
-                                <tr><td class="py-2 px-3">DEVELOPMENT FEE</td><td class="py-2 px-3 text-right">Php 670.00</td></tr>
-                                <tr><td class="py-2 px-3">LABORATORY FEE (IS Elec_1, CC 104, DB 102, IS_104)</td><td class="py-2 px-3 text-right">Php 880.00</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
-    <!-- JAVASCRIPT APP ENGINE -->
     <script>
-        // Official Subject Data from Certificate of Registration
-        const SUBJECTS = [
-            {
-                code: "CC 104",
-                name: "Data Structure and Algorithms",
-                units: 3,
-                room: "LAB ILAB",
-                days: ["M", "W", "F"],
-                time: "09:00 AM - 10:00 AM (M/F) / 10:00 AM - 11:00 AM (M/W)",
-                slots: [
-                    { day: "M", start: "09:00", end: "11:00", text: "09:00 AM - 11:00 AM" },
-                    { day: "W", start: "10:00", end: "11:00", text: "10:00 AM - 11:00 AM" },
-                    { day: "F", start: "09:00", end: "10:00", text: "09:00 AM - 10:00 AM" }
-                ]
-            },
-            {
-                code: "IS_104",
-                name: "Systems Analysis and Design",
-                units: 3,
-                room: "COM LAB 1",
-                days: ["TH", "T", "W", "M"],
-                time: "07:00 AM - 08:30 AM (TH/T) / 02:00 PM - 03:00 PM (W/M)",
-                slots: [
-                    { day: "T", start: "07:00", end: "08:30", text: "07:00 AM - 08:30 AM" },
-                    { day: "TH", start: "07:00", end: "08:30", text: "07:00 AM - 08:30 AM" },
-                    { day: "M", start: "14:00", end: "15:00", text: "02:00 PM - 03:00 PM" },
-                    { day: "W", start: "14:00", end: "15:00", text: "02:00 PM - 03:00 PM" }
-                ]
-            },
-            {
-                code: "IS Elec_1",
-                name: "Human Computer Interaction",
-                units: 3,
-                room: "COM LAB 1",
-                days: ["T", "TH"],
-                time: "08:30 AM - 10:00 AM (T/TH) / 02:30 PM - 03:30 PM (T/TH)",
-                slots: [
-                    { day: "T", start: "08:30", end: "10:00", text: "08:30 AM - 10:00 AM" },
-                    { day: "TH", start: "08:30", end: "10:00", text: "08:30 AM - 10:00 AM" },
-                    { day: "T", start: "14:30", end: "15:30", text: "02:30 PM - 03:30 PM" },
-                    { day: "TH", start: "14:30", end: "15:30", text: "02:30 PM - 03:30 PM" }
-                ]
-            },
-            {
-                code: "PATHFIT 4",
-                name: "Dance (Cultural and Modern Dances)",
-                units: 2,
-                room: "KALAP-GYM",
-                days: ["T"],
-                time: "10:00 AM - 12:00 PM",
-                slots: [
-                    { day: "T", start: "10:00", end: "12:00", text: "10:00 AM - 12:00 PM" }
-                ]
-            },
-            {
-                code: "DM 103",
-                name: "Business Process Management",
-                units: 3,
-                room: "TBA",
-                days: ["T", "TH"],
-                time: "01:00 PM - 02:00 PM",
-                slots: [
-                    { day: "T", start: "13:00", end: "14:00", text: "01:00 PM - 02:00 PM" },
-                    { day: "TH", start: "13:00", end: "14:00", text: "01:00 PM - 02:00 PM" }
-                ]
-            },
-            {
-                code: "DM 102",
-                name: "Financial Management",
-                units: 3,
-                room: "TBA",
-                days: ["TH", "T"],
-                time: "05:30 PM - 07:00 PM",
-                slots: [
-                    { day: "T", start: "17:30", end: "19:00", text: "05:30 PM - 07:00 PM" },
-                    { day: "TH", start: "17:30", end: "19:00", text: "05:30 PM - 07:00 PM" }
-                ]
-            },
-            {
-                code: "GE_3",
-                name: "Mathematics in the Modern World",
-                units: 3,
-                room: "TBA",
-                days: ["TH", "T"],
-                time: "07:00 PM - 08:30 PM",
-                slots: [
-                    { day: "T", start: "19:00", end: "20:30", text: "07:00 PM - 08:30 PM" },
-                    { day: "TH", start: "19:00", end: "20:30", text: "07:00 PM - 08:30 PM" }
-                ]
-            },
+        // Exact Subject Data updated directly from official assessment form image
+        const subjectsData = [
             {
                 code: "DB 102",
-                name: "Database Systems",
+                title: "Database Systems",
+                lecHrs: 2,
+                labHrs: 3,
+                tuitionHrs: 3,
                 units: 3,
                 room: "COM LAB 1",
-                days: ["W", "M", "F"],
-                time: "07:00 AM - 08:00 AM (W/M) / 08:00 AM - 09:00 AM (W/M/F)",
-                slots: [
-                    { day: "M", start: "07:00", end: "09:00", text: "07:00 AM - 09:00 AM" },
-                    { day: "W", start: "07:00", end: "09:00", text: "07:00 AM - 09:00 AM" },
-                    { day: "F", start: "08:00", end: "09:00", text: "08:00 AM - 09:00 AM" }
-                ]
+                rawDayTime: "BSIS 24-2-A | M/W M/W/F | 07:00 AM - 08:00 AM 08:00 AM - 09:00 AM",
+                schedules: [
+                    { day: "M", startTime: "07:00", endTime: "08:00", type: "Lec" },
+                    { day: "W", startTime: "07:00", endTime: "08:00", type: "Lec" },
+                    { day: "M", startTime: "08:00", endTime: "09:00", type: "Lab" },
+                    { day: "W", startTime: "08:00", endTime: "09:00", type: "Lab" },
+                    { day: "F", startTime: "08:00", endTime: "09:00", type: "Lab" }
+                ],
+                color: { bg: "bg-emerald-100 dark:bg-emerald-950/90 border-emerald-300 dark:border-emerald-700 text-emerald-950 dark:text-emerald-100", badge: "bg-emerald-600" }
+            },
+            {
+                code: "CC 104",
+                title: "Data Structure and Algorithms",
+                lecHrs: 2,
+                labHrs: 3,
+                tuitionHrs: 3,
+                units: 3,
+                room: "iLAB iLAB",
+                rawDayTime: "BSIS 24-2-A | M/W/F M/W | 09:00 AM - 10:00 AM 10:00 AM - 11:00 AM",
+                schedules: [
+                    { day: "M", startTime: "09:00", endTime: "10:00", type: "Lec" },
+                    { day: "W", startTime: "09:00", endTime: "10:00", type: "Lec" },
+                    { day: "F", startTime: "09:00", endTime: "10:00", type: "Lec" },
+                    { day: "M", startTime: "10:00", endTime: "11:00", type: "Lab" },
+                    { day: "W", startTime: "10:00", endTime: "11:00", type: "Lab" }
+                ],
+                color: { bg: "bg-blue-100 dark:bg-blue-950/90 border-blue-300 dark:border-blue-700 text-blue-950 dark:text-blue-100", badge: "bg-blue-600" }
             },
             {
                 code: "GE Elec3",
-                name: "Philippine Popular Culture",
+                title: "Philippine Popular Culture",
+                lecHrs: 3,
+                labHrs: 0,
+                tuitionHrs: 3,
                 units: 3,
-                room: "TBA",
-                days: ["W", "M", "F"],
-                time: "04:00 PM - 05:00 PM",
-                slots: [
-                    { day: "M", start: "16:00", end: "17:00", text: "04:00 PM - 05:00 PM" },
-                    { day: "W", start: "16:00", end: "17:00", text: "04:00 PM - 05:00 PM" },
-                    { day: "F", start: "16:00", end: "17:00", text: "04:00 PM - 05:00 PM" }
-                ]
+                room: "COM LAB 1",
+                rawDayTime: "BSIS 24-2-A | W/M/F | 04:00 PM - 05:00 PM",
+                schedules: [
+                    { day: "M", startTime: "16:00", endTime: "17:00", type: "Lec" },
+                    { day: "W", startTime: "16:00", endTime: "17:00", type: "Lec" },
+                    { day: "F", startTime: "16:00", endTime: "17:00", type: "Lec" }
+                ],
+                color: { bg: "bg-purple-100 dark:bg-purple-950/90 border-purple-300 dark:border-purple-700 text-purple-950 dark:text-purple-100", badge: "bg-purple-600" }
+            },
+            {
+                code: "IS 104",
+                title: "Systems Analysis and Design",
+                lecHrs: 2,
+                labHrs: 3,
+                tuitionHrs: 3,
+                units: 3,
+                room: "COM LAB 1",
+                rawDayTime: "BSIS 24-2-A | T/TH W/M | 07:00 AM - 08:30 AM 02:00 PM - 03:00 PM",
+                schedules: [
+                    { day: "T", startTime: "07:00", endTime: "08:30", type: "Lec" },
+                    { day: "TH", startTime: "07:00", endTime: "08:30", type: "Lec" },
+                    { day: "M", startTime: "14:00", endTime: "15:00", type: "Lab" },
+                    { day: "W", startTime: "14:00", endTime: "15:00", type: "Lab" }
+                ],
+                color: { bg: "bg-amber-100 dark:bg-amber-950/90 border-amber-300 dark:border-amber-700 text-amber-950 dark:text-amber-100", badge: "bg-amber-600" }
+            },
+            {
+                code: "IS Elec_1",
+                title: "Human Computer Interaction",
+                lecHrs: 2,
+                labHrs: 3,
+                tuitionHrs: 3,
+                units: 3,
+                room: "COM LAB 1",
+                rawDayTime: "BSIS 24-2-A | T/TH T/TH | 08:30 AM - 10:00 AM 02:30 PM - 03:30 PM",
+                schedules: [
+                    { day: "T", startTime: "08:30", endTime: "10:00", type: "Lec" },
+                    { day: "TH", startTime: "08:30", endTime: "10:00", type: "Lec" },
+                    { day: "T", startTime: "14:30", endTime: "15:30", type: "Lab" },
+                    { day: "TH", startTime: "14:30", endTime: "15:30", type: "Lab" }
+                ],
+                color: { bg: "bg-rose-100 dark:bg-rose-950/90 border-rose-300 dark:border-rose-700 text-rose-950 dark:text-rose-100", badge: "bg-rose-600" }
+            },
+            {
+                code: "PATHFIT 4",
+                title: "Dance (Cultural and Modern Dances)",
+                lecHrs: 2,
+                labHrs: 0,
+                tuitionHrs: 2,
+                units: 2,
+                room: "KALAP-GYM",
+                rawDayTime: "BSIS 24-2-A | T | 10:00 AM - 12:00 PM",
+                schedules: [
+                    { day: "T", startTime: "10:00", endTime: "12:00", type: "Lec" }
+                ],
+                color: { bg: "bg-teal-100 dark:bg-teal-950/90 border-teal-300 dark:border-teal-700 text-teal-950 dark:text-teal-100", badge: "bg-teal-600" }
+            },
+            {
+                code: "DM 103",
+                title: "Business Process Management",
+                lecHrs: 3,
+                labHrs: 0,
+                tuitionHrs: 3,
+                units: 3,
+                room: "", // Blank in document
+                rawDayTime: "BSIS 24-2-A | T/TH | 01:00 PM - 02:00 PM",
+                schedules: [
+                    { day: "T", startTime: "13:00", endTime: "14:00", type: "Lec" },
+                    { day: "TH", startTime: "13:00", endTime: "14:00", type: "Lec" }
+                ],
+                color: { bg: "bg-cyan-100 dark:bg-cyan-950/90 border-cyan-300 dark:border-cyan-700 text-cyan-950 dark:text-cyan-100", badge: "bg-cyan-600" }
+            },
+            {
+                code: "DM 102",
+                title: "Financial Management",
+                lecHrs: 3,
+                labHrs: 0,
+                tuitionHrs: 3,
+                units: 3,
+                room: "", // Blank in document
+                rawDayTime: "BSIS 24-2-A | TH/T | 05:30 PM - 07:00 PM",
+                schedules: [
+                    { day: "T", startTime: "17:30", endTime: "19:00", type: "Lec" },
+                    { day: "TH", startTime: "17:30", endTime: "19:00", type: "Lec" }
+                ],
+                color: { bg: "bg-indigo-100 dark:bg-indigo-950/90 border-indigo-300 dark:border-indigo-700 text-indigo-950 dark:text-indigo-100", badge: "bg-indigo-600" }
+            },
+            {
+                code: "GE_3",
+                title: "Mathematics in the Modern World",
+                lecHrs: 3,
+                labHrs: 0,
+                tuitionHrs: 3,
+                units: 3,
+                room: "", // Blank in document
+                rawDayTime: "BSIS 24-2-A | TH/T | 07:00 PM - 08:30 PM",
+                schedules: [
+                    { day: "T", startTime: "19:00", endTime: "20:30", type: "Lec" },
+                    { day: "TH", startTime: "19:00", endTime: "20:30", type: "Lec" }
+                ],
+                color: { bg: "bg-orange-100 dark:bg-orange-950/90 border-orange-300 dark:border-orange-700 text-orange-950 dark:text-orange-100", badge: "bg-orange-600" }
             }
         ];
 
-        // Day Mapping
-        const DAY_MAP = { 1: "M", 2: "T", 3: "W", 4: "TH", 5: "F" };
-        const DAY_FULL_NAMES = { "M": "Monday", "T": "Tuesday", "W": "Wednesday", "TH": "Thursday", "F": "Friday" };
+        const daysMap = ["M", "T", "W", "TH", "F"];
+        const dayIndexToAbbr = ["SUN", "M", "T", "W", "TH", "F", "SAT"];
+        const dayFullNames = { "M": "Monday", "T": "Tuesday", "W": "Wednesday", "TH": "Thursday", "F": "Friday", "SAT": "Saturday", "SUN": "Sunday" };
 
-        let currentTodayCode = "M"; // Default fallback
-        let tempPhotoBase64 = null;
+        const timeSlots = [
+            "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", 
+            "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
+        ];
 
-        // Initialize App on DOM Load
-        document.addEventListener('DOMContentLoaded', () => {
-            initSplashScreen();
-            detectToday();
-            loadProfile();
-            renderWeeklyGrid();
-            renderListSubjects('TODAY');
-            setupTabNavigation();
-        });
+        let activeDayFilter = "TODAY";
+        let activeView = "timetable";
 
-        // 1. Splash Screen Engine
-        function initSplashScreen() {
-            const bar = document.getElementById('splash-progress');
-            setTimeout(() => { bar.style.width = '40%'; }, 200);
-            setTimeout(() => { bar.style.width = '80%'; }, 600);
-            setTimeout(() => { bar.style.width = '100%'; }, 900);
+        // Local Storage Profile Logic
+        function loadStudentProfile() {
+            const savedName = localStorage.getItem("ccc_student_name");
+            const savedId = localStorage.getItem("ccc_student_id");
+
+            if (!savedName || !savedId) {
+                openProfileModal(false);
+            } else {
+                displayProfile(savedName, savedId);
+            }
+        }
+
+        function displayProfile(name, id) {
+            document.getElementById("student-name-display").innerText = name.toUpperCase();
+            document.getElementById("student-id-display").innerText = id;
+            document.getElementById("assessment-student-note").innerText = `Assessment registration verified for ${name.toUpperCase()} (${id}).`;
+
+            // Initials for avatar
+            const words = name.trim().split(" ");
+            let initials = "ST";
+            if (words.length >= 2) {
+                initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+            } else if (words.length === 1 && words[0].length >= 2) {
+                initials = words[0].substring(0, 2).toUpperCase();
+            }
+            document.getElementById("student-avatar").innerText = initials;
+        }
+
+        function saveProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById("input-student-name").value.trim();
+            const id = document.getElementById("input-student-id").value.trim();
+
+            if (name && id) {
+                localStorage.setItem("ccc_student_name", name);
+                localStorage.setItem("ccc_student_id", id);
+                displayProfile(name, id);
+                closeProfileModal();
+            }
+        }
+
+        function openProfileModal(allowClose = true) {
+            const modal = document.getElementById("profile-modal");
+            const closeBtn = document.getElementById("close-profile-btn");
+            
+            document.getElementById("input-student-name").value = localStorage.getItem("ccc_student_name") || "";
+            document.getElementById("input-student-id").value = localStorage.getItem("ccc_student_id") || "";
+
+            if (allowClose) {
+                closeBtn.classList.remove("hidden");
+            } else {
+                closeBtn.classList.add("hidden");
+            }
+
+            modal.classList.remove("hidden");
+        }
+
+        function closeProfileModal() {
+            document.getElementById("profile-modal").classList.add("hidden");
+        }
+
+        // Entrance Animation Loader Logic
+        function runSplashScreen() {
+            const splash = document.getElementById("splash-screen");
+            const progress = document.getElementById("splash-progress");
+
+            setTimeout(() => { progress.style.width = "40%"; }, 200);
+            setTimeout(() => { progress.style.width = "85%"; }, 600);
+            setTimeout(() => { progress.style.width = "100%"; }, 1000);
 
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.classList.add('opacity-0');
-                setTimeout(() => splash.classList.add('hidden'), 700);
+                splash.classList.add("splash-hidden");
             }, 1200);
         }
 
-        // 2. Dynamic Today Detection
-        function detectToday() {
-            const now = new Date();
-            const dayNum = now.getDay(); // 0: Sun, 1: Mon ... 6: Sat
-            currentTodayCode = DAY_MAP[dayNum] || "M"; // Fallback to Monday on weekends
-
-            const dateOptions = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-            document.getElementById('live-date-text').textContent = now.toLocaleDateString('en-US', dateOptions);
-            document.getElementById('today-day-name').textContent = (DAY_FULL_NAMES[currentTodayCode] || "MONDAY").toUpperCase();
-
-            // Highlight Header Column in Grid
-            const headerCol = document.getElementById(`header-col-${currentTodayCode}`);
-            if (headerCol) {
-                headerCol.classList.add('bg-brand-900/50', 'text-brand-400', 'border-b-2', 'border-brand-500');
-                headerCol.innerHTML += `<span class="text-[9px] bg-brand-500 text-slate-900 font-extrabold px-1 rounded mt-0.5">TODAY</span>`;
-            }
+        function getTodayAbbr() {
+            const currentDayIndex = new Date().getDay();
+            const abbr = dayIndexToAbbr[currentDayIndex];
+            return (abbr === "SUN" || abbr === "SAT") ? "M" : abbr;
         }
 
-        // 3. Profile Management with LocalStorage
-        function loadProfile() {
-            const savedName = localStorage.getItem('student_name');
-            const savedId = localStorage.getItem('student_id');
-            const savedPhoto = localStorage.getItem('student_photo');
-
-            if (!savedName || !savedId) {
-                openProfileModal();
-            } else {
-                updateProfileUI(savedName, savedId, savedPhoto);
-            }
+        function timeToMinutes(timeStr) {
+            const [hrs, mins] = timeStr.split(":").map(Number);
+            return (hrs - 7) * 60 + mins;
         }
 
-        function updateProfileUI(name, id, photo) {
-            document.getElementById('header-display-name').textContent = name;
-            document.getElementById('header-display-id').textContent = id;
-
-            const avatarImg = document.getElementById('header-user-avatar');
-            const avatarInitials = document.getElementById('header-user-initials');
-
-            if (photo) {
-                avatarImg.src = photo;
-                avatarImg.classList.remove('hidden');
-                avatarInitials.classList.add('hidden');
-            } else {
-                avatarImg.classList.add('hidden');
-                avatarInitials.classList.remove('hidden');
-                // Calculate initials
-                const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                avatarInitials.textContent = initials || 'ST';
-            }
+        function formatTimeLabel(timeStr) {
+            const [hrs, mins] = timeStr.split(":").map(Number);
+            const period = hrs >= 12 ? "PM" : "AM";
+            const displayHrs = hrs % 12 === 0 ? 12 : hrs % 12;
+            return `${displayHrs}:${mins === 0 ? "00" : mins} ${period}`;
         }
 
-        function openProfileModal() {
-            const savedName = localStorage.getItem('student_name') || '';
-            const savedId = localStorage.getItem('student_id') || '';
-            const savedPhoto = localStorage.getItem('student_photo') || null;
-
-            document.getElementById('input-student-name').value = savedName;
-            document.getElementById('input-student-id').value = savedId;
-            tempPhotoBase64 = savedPhoto;
-
-            const preview = document.getElementById('modal-avatar-preview');
-            const placeholder = document.getElementById('modal-avatar-placeholder');
-            const btnRemove = document.getElementById('btn-remove-photo');
-
-            if (savedPhoto) {
-                preview.src = savedPhoto;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                btnRemove.classList.remove('hidden');
-            } else {
-                preview.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                btnRemove.classList.add('hidden');
-            }
-
-            document.getElementById('profile-modal').classList.remove('hidden');
+        function getDayFullName(abbr) {
+            return dayFullNames[abbr] || abbr;
         }
 
-        // Handle Photo Selection & Conversion to Base64
-        document.getElementById('input-student-photo').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    tempPhotoBase64 = evt.target.result;
-                    const preview = document.getElementById('modal-avatar-preview');
-                    const placeholder = document.getElementById('modal-avatar-placeholder');
-                    preview.src = tempPhotoBase64;
-                    preview.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                    document.getElementById('btn-remove-photo').classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('btn-remove-photo').addEventListener('click', () => {
-            tempPhotoBase64 = null;
-            document.getElementById('input-student-photo').value = '';
-            document.getElementById('modal-avatar-preview').classList.add('hidden');
-            document.getElementById('modal-avatar-placeholder').classList.remove('hidden');
-            document.getElementById('btn-remove-photo').classList.add('hidden');
-        });
-
-        document.getElementById('profile-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('input-student-name').value.trim();
-            const id = document.getElementById('input-student-id').value.trim();
-
-            if (name && id) {
-                localStorage.setItem('student_name', name);
-                localStorage.setItem('student_id', id);
-                if (tempPhotoBase64) {
-                    localStorage.setItem('student_photo', tempPhotoBase64);
-                } else {
-                    localStorage.removeItem('student_photo');
-                }
-
-                updateProfileUI(name, id, tempPhotoBase64);
-                document.getElementById('profile-modal').classList.add('hidden');
-            }
-        });
-
-        document.getElementById('btn-edit-profile').addEventListener('click', openProfileModal);
-
-        // 4. Render Weekly Full Board (100% Width)
-        function renderWeeklyGrid() {
-            const container = document.getElementById('grid-schedule-rows');
-            container.innerHTML = '';
-
-            const days = ["M", "T", "W", "TH", "F"];
+        function setDayFilter(day) {
+            activeDayFilter = day;
             
-            // Generate Time Slots from 7 AM to 8 PM
-            const timeSlots = [
-                "07:00", "08:00", "09:00", "10:00", "11:00", "12:00",
-                "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
+            document.querySelectorAll(".day-btn").forEach(btn => {
+                if (btn.getAttribute("data-day") === day) {
+                    btn.className = "day-btn px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition bg-brand-700 text-white shadow-xs";
+                } else {
+                    btn.className = "day-btn px-3 py-1.5 rounded-xl text-xs font-medium shrink-0 transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700";
+                }
+            });
+
+            const desktopSelect = document.getElementById("day-filter");
+            if (desktopSelect) desktopSelect.value = day;
+
+            filterSubjects();
+        }
+
+        function renderHeaderGrid() {
+            const headerContainer = document.getElementById("timetable-header-grid");
+            const todayAbbr = getTodayAbbr();
+
+            const daysConfig = [
+                { abbr: "M", name: "Mon" },
+                { abbr: "T", name: "Tue" },
+                { abbr: "W", name: "Wed" },
+                { abbr: "TH", name: "Thu" },
+                { abbr: "F", name: "Fri" }
             ];
 
-            timeSlots.forEach(time => {
-                const hourNum = parseInt(time.split(':')[0]);
-                const displayTime = hourNum > 12 ? `${hourNum - 12} PM` : (hourNum === 12 ? '12 PM' : `${hourNum} AM`);
-                
-                let rowHTML = `<div class="grid grid-cols-[45px_repeat(5,1fr)] min-h-[64px] border-b border-slate-800/60">`;
-                rowHTML += `<div class="p-1 text-[10px] text-slate-500 font-mono text-center border-r border-slate-800 flex items-center justify-center">${displayTime}</div>`;
+            let html = `<div class="text-slate-400 dark:text-slate-500 font-mono text-[9px] sm:text-[11px] flex items-center justify-center">Time</div>`;
 
-                days.forEach(day => {
-                    const isToday = (day === currentTodayCode);
-                    const todayBgClass = isToday ? 'bg-slate-800/40' : '';
-                    
-                    rowHTML += `<div class="p-1 border-r border-slate-800/60 relative ${todayBgClass}">`;
-
-                    // Find subjects for this day and time
-                    SUBJECTS.forEach(sub => {
-                        sub.slots.forEach(slot => {
-                            if (slot.day === day) {
-                                const startHour = parseInt(slot.start.split(':')[0]);
-                                if (startHour === hourNum) {
-                                    const isTBA = sub.room === "TBA";
-                                    const badgeBg = isTBA ? 'bg-amber-950/80 border-amber-600/60 text-amber-200' : 'bg-emerald-950/80 border-emerald-600/60 text-emerald-200';
-
-                                    rowHTML += `
-                                        <div class="p-1.5 rounded border text-[10px] leading-tight mb-1 shadow-md transition hover:scale-[1.02] cursor-pointer ${badgeBg}">
-                                            <div class="font-bold truncate text-white">${sub.name}</div>
-                                            <div class="text-[9px] opacity-80 truncate font-mono">${sub.code} • ${sub.room}</div>
-                                            <div class="text-[8px] opacity-70 mt-0.5">${slot.text}</div>
-                                        </div>
-                                    `;
-                                }
-                            }
-                        });
-                    });
-
-                    rowHTML += `</div>`;
-                });
-
-                rowHTML += `</div>`;
-                container.innerHTML += rowHTML;
-            });
-        }
-
-        // 5. Render Filtered List View
-        function renderListSubjects(filterDay = 'TODAY') {
-            const container = document.getElementById('list-subjects-container');
-            container.innerHTML = '';
-
-            const targetDay = (filterDay === 'TODAY') ? currentTodayCode : filterDay;
-
-            const filtered = SUBJECTS.filter(sub => {
-                if (targetDay === 'ALL') return true;
-                return sub.days.includes(targetDay);
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-slate-800/40 rounded-2xl border border-slate-800">
-                        <i class="fa-solid fa-calendar-xmark text-4xl text-slate-600 mb-3"></i>
-                        <p class="text-sm text-slate-400">No classes scheduled for this day filter.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            filtered.forEach(sub => {
-                const isTBA = sub.room === 'TBA';
-                const roomBadge = isTBA 
-                    ? `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">TBA ROOM</span>`
-                    : `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-door-open mr-1"></i>${sub.room}</span>`;
-
-                container.innerHTML += `
-                    <div class="bg-slate-800/90 border border-slate-700 hover:border-slate-600 rounded-2xl p-5 shadow-lg transition">
-                        <div class="flex items-start justify-between gap-3 mb-3">
-                            <div>
-                                <span class="text-xs font-mono text-brand-400 font-bold block mb-0.5">${sub.code}</span>
-                                <h4 class="text-base font-bold text-white leading-snug">${sub.name}</h4>
-                            </div>
-                            ${roomBadge}
-                        </div>
-                        <div class="space-y-1.5 text-xs text-slate-300 border-t border-slate-700/60 pt-3">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-regular fa-clock text-slate-400 w-4"></i>
-                                <span>${sub.time}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fa-regular fa-calendar text-slate-400 w-4"></i>
-                                <span>Days: <strong class="text-white">${sub.days.join(', ')}</strong></span>
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400">
-                                <i class="fa-solid fa-graduation-cap text-slate-400 w-4"></i>
-                                <span>Units: ${sub.units}.0</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // Filter Select Change Handler
-        document.getElementById('day-filter-select').addEventListener('change', (e) => {
-            renderListSubjects(e.target.value);
-        });
-
-        // Search Input Handler
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('#grid-schedule-rows div.rounded');
-            
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    card.style.opacity = '1';
-                    card.style.transform = 'scale(1.02)';
+            daysConfig.forEach(d => {
+                const isToday = d.abbr === todayAbbr;
+                if (isToday) {
+                    html += `
+                        <div class="border-l border-slate-200 dark:border-slate-800 bg-emerald-500/10 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-1">
+                            <span>${d.name}</span>
+                            <span class="text-[7px] sm:text-[9px] bg-emerald-600 text-white font-black px-1 rounded uppercase tracking-tight">TODAY</span>
+                        </div>`;
                 } else {
-                    card.style.opacity = query ? '0.2' : '1';
-                    card.style.transform = 'scale(1)';
+                    html += `<div class="border-l border-slate-200 dark:border-slate-800 flex items-center justify-center">${d.name}</div>`;
                 }
             });
-        });
 
-        // Tab Switcher Navigation Engine
-        function setupTabNavigation() {
-            const btnGrid = document.getElementById('tab-grid');
-            const btnToday = document.getElementById('tab-today');
-            const btnAssessment = document.getElementById('tab-assessment');
+            headerContainer.innerHTML = html;
 
-            const viewGrid = document.getElementById('view-weekly-board');
-            const viewToday = document.getElementById('view-today-list');
-            const viewAssessment = document.getElementById('view-assessment');
+            const mobileTodayText = document.getElementById("mobile-indicator-text");
+            if (mobileTodayText) {
+                mobileTodayText.innerText = `Today is ${getDayFullName(todayAbbr)}`;
+            }
+        }
 
-            function resetTabs() {
-                [btnGrid, btnToday, btnAssessment].forEach(b => {
-                    b.className = "px-3 py-1.5 rounded-md font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5";
-                });
-                [viewGrid, viewToday, viewAssessment].forEach(v => v.classList.add('hidden'));
+        function renderTimetable(filteredSubjects = subjectsData) {
+            renderHeaderGrid();
+            const container = document.getElementById("timetable-body");
+            container.innerHTML = "";
+
+            const totalHeight = 14 * 60;
+            const todayAbbr = getTodayAbbr();
+            const isSmallScreen = window.innerWidth < 640;
+            const timeColWidth = isSmallScreen ? 42 : 60;
+
+            const gridBackground = document.createElement("div");
+            gridBackground.className = "absolute inset-0 pointer-events-none";
+            
+            timeSlots.forEach(slot => {
+                const hourLine = document.createElement("div");
+                hourLine.className = "border-b border-slate-200/70 dark:border-slate-700/50 flex items-start text-[8px] sm:text-[10px] text-slate-400 dark:text-slate-500 pl-0.5 sm:pl-2 pt-1 font-mono";
+                hourLine.style.height = "60px";
+                hourLine.innerText = formatTimeLabel(slot);
+                gridBackground.appendChild(hourLine);
+            });
+            container.appendChild(gridBackground);
+
+            const blocksContainer = document.createElement("div");
+            blocksContainer.className = "relative timetable-grid w-full";
+            blocksContainer.style.height = `${totalHeight}px`;
+
+            for (let i = 0; i < 6; i++) {
+                const col = document.createElement("div");
+                const colDayAbbr = i > 0 ? daysMap[i - 1] : null;
+                const isTodayCol = colDayAbbr && colDayAbbr === todayAbbr;
+                
+                col.className = i > 0 
+                    ? `border-l border-slate-200/60 dark:border-slate-800 h-full ${isTodayCol ? 'bg-emerald-500/5 dark:bg-emerald-950/20' : ''}` 
+                    : "h-full";
+                blocksContainer.appendChild(col);
             }
 
-            btnGrid.addEventListener('click', () => {
-                resetTabs();
-                btnGrid.className = "px-3 py-1.5 rounded-md font-semibold text-white bg-brand-600 shadow transition flex items-center gap-1.5";
-                viewGrid.classList.remove('hidden');
+            const targetDay = activeDayFilter === "TODAY" ? todayAbbr : activeDayFilter;
+
+            filteredSubjects.forEach(subject => {
+                subject.schedules.forEach(sched => {
+                    if (targetDay !== "ALL" && sched.day !== targetDay) return;
+
+                    const dayIndex = daysMap.indexOf(sched.day);
+                    if (dayIndex === -1) return;
+
+                    const startMins = timeToMinutes(sched.startTime);
+                    const endMins = timeToMinutes(sched.endTime);
+                    const durationMins = endMins - startMins;
+
+                    const top = startMins;
+                    const height = durationMins;
+                    const leftColIndex = dayIndex + 1;
+                    const isTodayBlock = sched.day === todayAbbr;
+                    const displayRoom = subject.room ? subject.room : "TBA";
+
+                    const card = document.createElement("div");
+                    card.className = `absolute rounded-md sm:rounded-xl border p-1 sm:p-2 text-[9px] sm:text-xs flex flex-col justify-between shadow-2xs transition-all cursor-pointer overflow-hidden ${subject.color.bg} ${isTodayBlock ? 'ring-2 ring-emerald-500 dark:ring-emerald-400 shadow-md z-10' : ''}`;
+                    
+                    card.style.top = `${top}px`;
+                    card.style.height = `${Math.max(height - 2, 26)}px`;
+                    card.style.left = `calc(${leftColIndex} * ((100% - ${timeColWidth}px) / 5) + ${timeColWidth}px - ((100% - ${timeColWidth}px) / 5) + 1px)`;
+                    card.style.width = `calc(((100% - ${timeColWidth}px) / 5) - 2px)`;
+
+                    card.onclick = () => openModal(subject);
+
+                    card.innerHTML = `
+                        <div class="leading-tight">
+                            <div class="font-extrabold text-[9px] sm:text-[11px] truncate flex items-center justify-between">
+                                <span class="truncate">${subject.code}</span>
+                                <span class="hidden sm:inline-block text-[8px] px-1 rounded bg-white/50 dark:bg-black/30">${sched.type}</span>
+                            </div>
+                            <div class="text-[8px] sm:text-[9px] opacity-90 truncate mt-0.5">${subject.title}</div>
+                        </div>
+                        <div class="text-[7.5px] sm:text-[9px] font-semibold truncate opacity-90 mt-0.5 flex flex-col sm:flex-row justify-between leading-none gap-0.5">
+                            <span class="truncate"><i class="fa-solid fa-clock text-[7px] sm:text-[8px] mr-0.5"></i>${formatTimeLabel(sched.startTime)}</span>
+                            <span class="truncate hidden sm:inline"><i class="fa-solid fa-location-dot text-[7px] sm:text-[8px]"></i> ${displayRoom}</span>
+                        </div>
+                    `;
+
+                    blocksContainer.appendChild(card);
+                });
             });
 
-            btnToday.addEventListener('click', () => {
-                resetTabs();
-                btnToday.className = "px-3 py-1.5 rounded-md font-semibold text-white bg-brand-600 shadow transition flex items-center gap-1.5";
-                viewToday.classList.remove('hidden');
-            });
-
-            btnAssessment.addEventListener('click', () => {
-                resetTabs();
-                btnAssessment.className = "px-3 py-1.5 rounded-md font-semibold text-white bg-brand-600 shadow transition flex items-center gap-1.5";
-                viewAssessment.classList.remove('hidden');
-            });
+            container.appendChild(blocksContainer);
         }
+
+        function renderListView(filteredSubjects = subjectsData) {
+            const container = document.getElementById("subject-cards-container");
+            const noResultsMsg = document.getElementById("no-results-msg");
+            container.innerHTML = "";
+
+            const todayAbbr = getTodayAbbr();
+            const targetDay = activeDayFilter === "TODAY" ? todayAbbr : activeDayFilter;
+
+            let matchingCount = 0;
+
+            filteredSubjects.forEach(subject => {
+                const daySchedules = targetDay === "ALL" 
+                    ? subject.schedules 
+                    : subject.schedules.filter(s => s.day === targetDay);
+
+                if (daySchedules.length === 0) return;
+                matchingCount++;
+                
+                const displayRoom = subject.room ? subject.room : "TBA";
+
+                const card = document.createElement("div");
+                card.className = "bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-2xs hover:shadow-md transition flex flex-col justify-between cursor-pointer";
+                card.onclick = () => openModal(subject);
+
+                let schedHtml = daySchedules.map(s => `
+                    <div class="flex items-center justify-between text-xs bg-slate-50 dark:bg-slate-900/60 p-2 rounded-xl border border-slate-100 dark:border-slate-700/50">
+                        <div class="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
+                            <span class="w-6 text-center py-0.5 rounded bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-300 text-[10px] font-bold">${s.day}</span>
+                            <span>${formatTimeLabel(s.startTime)} - ${formatTimeLabel(s.endTime)}</span>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${s.type === 'Lab' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">${s.type}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-bold text-white ${subject.color.badge} px-2.5 py-1 rounded-xl shadow-2xs">${subject.code}</span>
+                            <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${displayRoom}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base leading-snug mb-3">${subject.title}</h4>
+                        <div class="space-y-1.5 mb-3">
+                            ${schedHtml}
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span><i class="fa-solid fa-layer-group text-slate-400 mr-1"></i>Units: <strong>${subject.units}</strong></span>
+                        <span><i class="fa-solid fa-clock text-slate-400 mr-1"></i>Lec ${subject.lecHrs}h / Lab ${subject.labHrs}h</span>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            if (matchingCount === 0) {
+                noResultsMsg.classList.remove("hidden");
+            } else {
+                noResultsMsg.classList.add("hidden");
+            }
+        }
+
+        function filterSubjects() {
+            const query = document.getElementById("search-input").value.toLowerCase().trim();
+            const filtered = subjectsData.filter(sub => 
+                sub.code.toLowerCase().includes(query) ||
+                sub.title.toLowerCase().includes(query) ||
+                (sub.room && sub.room.toLowerCase().includes(query))
+            );
+
+            if (activeView === "timetable") {
+                renderTimetable(filtered);
+            } else if (activeView === "list") {
+                renderListView(filtered);
+            }
+        }
+
+        function switchView(view) {
+            activeView = view;
+            
+            const timetableView = document.getElementById("timetable-view");
+            const listView = document.getElementById("list-view");
+            const assessmentView = document.getElementById("assessment-view");
+
+            const btnTimetable = document.getElementById("view-timetable-btn");
+            const btnList = document.getElementById("view-list-btn");
+            const btnAssessment = document.getElementById("view-assessment-btn");
+
+            [btnTimetable, btnList, btnAssessment].forEach(b => {
+                b.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            });
+
+            timetableView.classList.add("hidden");
+            listView.classList.add("hidden");
+            assessmentView.classList.add("hidden");
+
+            if (view === "timetable") {
+                timetableView.classList.remove("hidden");
+                btnTimetable.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs";
+                renderTimetable();
+            } else if (view === "list") {
+                listView.classList.remove("hidden");
+                btnList.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs";
+                renderListView();
+            } else if (view === "assessment") {
+                assessmentView.classList.remove("hidden");
+                btnAssessment.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs";
+            }
+        }
+
+        function openModal(subject) {
+            const modal = document.getElementById("details-modal");
+            const content = document.getElementById("modal-content");
+            const displayRoom = subject.room ? subject.room : "TBA";
+
+            let scheduleItems = subject.schedules.map(s => `
+                <div class="flex items-center justify-between text-xs bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/60">
+                    <div>
+                        <strong class="text-brand-700 dark:text-brand-400 font-bold">${getDayFullName(s.day)} (${s.day})</strong>
+                        <div class="text-slate-600 dark:text-slate-300 mt-0.5">${formatTimeLabel(s.startTime)} - ${formatTimeLabel(s.endTime)}</div>
+                    </div>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${s.type === 'Lab' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300'}">${s.type} Session</span>
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-bold text-white ${subject.color.badge} px-2.5 py-0.5 rounded-full">${subject.code}</span>
+                    <span class="text-xs text-slate-400">Section A • 2nd Year</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-3">${subject.title}</h3>
+                
+                <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
+                    <div class="bg-slate-50 dark:bg-slate-900/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <span class="text-slate-400 block text-[10px] uppercase font-semibold">Assigned Room</span>
+                        <strong class="text-slate-700 dark:text-slate-200 block truncate mt-0.5"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${displayRoom}</strong>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <span class="text-slate-400 block text-[10px] uppercase font-semibold">Credited Units</span>
+                        <strong class="text-slate-700 dark:text-slate-200 block mt-0.5"><i class="fa-solid fa-graduation-cap text-brand-600 mr-1"></i>${subject.units} Units (${subject.tuitionHrs} hrs)</strong>
+                    </div>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Class Meetings</div>
+                    ${scheduleItems}
+                </div>
+
+                <div class="bg-slate-100 dark:bg-slate-900/80 p-2.5 rounded-xl text-[11px] text-slate-500 dark:text-slate-400">
+                    <span class="font-semibold text-slate-700 dark:text-slate-300">Assessment System Format:</span>
+                    <div class="font-mono mt-0.5 truncate">${subject.rawDayTime}</div>
+                </div>
+            `;
+
+            modal.classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("details-modal").classList.add("hidden");
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle("dark");
+            const icon = document.getElementById("theme-icon");
+            if (isDark) {
+                icon.className = "fa-solid fa-sun text-amber-400 text-sm";
+                localStorage.setItem("theme", "dark");
+            } else {
+                icon.className = "fa-solid fa-moon text-sm";
+                localStorage.setItem("theme", "light");
+            }
+        }
+
+        // Window onload initialization
+        window.onload = function() {
+            runSplashScreen();
+            loadStudentProfile();
+
+            if (localStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark");
+                document.getElementById("theme-icon").className = "fa-solid fa-sun text-amber-400 text-sm";
+            }
+
+            setDayFilter("TODAY");
+            switchView("timetable");
+        };
+
+        window.onresize = function() {
+            if (activeView === "timetable") {
+                renderTimetable();
+            }
+        };
     </script>
 </body>
 </html>
-                
